@@ -20,6 +20,13 @@ const { BadRequestError } = require("../expressError");
  * keys that match across both objects; if jsToSql doesn't have a key that
  * dataToUpdate does, the string will use the key name instead
  *
+ * For example, the input: {"test": 5, "test2": 6}, {"test": "test_column"}
+ *
+ * should produce: {
+      setCols:"\"test_column\"=$1, \"test2\"=$2",
+      values: [5, 6]
+    }
+ *
 */
 
 function sqlForPartialUpdate(dataToUpdate, jsToSql) {
