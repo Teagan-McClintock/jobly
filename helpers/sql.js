@@ -4,6 +4,17 @@ const { BadRequestError } = require("../expressError");
 
 // THIS NEEDS SOME GREAT DOCUMENTATION.
 
+/**
+ * dataToUpdate:
+ *  { }
+ *
+ *
+ * ["new data 1", "new data 2", "new data 3" ...]
+ * jsToSql: { columnName: "column_name", ...}
+ *
+ *
+ *
+*/
 function sqlForPartialUpdate(dataToUpdate, jsToSql) {
   const keys = Object.keys(dataToUpdate);
   if (keys.length === 0) throw new BadRequestError("No data");
@@ -20,3 +31,4 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
 }
 
 module.exports = { sqlForPartialUpdate };
+
