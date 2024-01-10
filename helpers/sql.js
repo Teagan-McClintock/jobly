@@ -44,5 +44,8 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
   };
 }
 
+// {"column1" ILIKE $1 AND "column2" >= $2 AND "column2" <= $3}
+//{ nameLike: "name", minEmployees: "num_employees", maxEmployees: "num_employees"}
+
 module.exports = { sqlForPartialUpdate };
 

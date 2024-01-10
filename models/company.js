@@ -67,6 +67,19 @@ class Company {
     return companiesRes.rows;
   }
 
+  /**
+   * Takes an input object {nameLike, minEmployees, maxEmployees} (all fields
+   * are optional but at least one must be provided)
+   *
+   * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
+   *
+   * The results will be filtered based on the conditions in the input
+   */
+
+  static async findFiltered(conditions) {
+
+  }
+
   /** Given a company handle, return data about company.
    *
    * Returns { handle, name, description, numEmployees, logoUrl, jobs }
