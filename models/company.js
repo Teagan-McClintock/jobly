@@ -70,6 +70,13 @@ class Company {
   /**
    * Takes an input object {nameLike, minEmployees, maxEmployees} (all fields
    * are optional but at least one must be provided)
+   * {nameLike: "c",
+   * minEmployees: 1,
+   * maxEmployees: 2}
+   *
+   * {nameLike: "ILIKE '%c%'",
+   * minEmployees: ">= 1",
+   * maxEmployees: "<= 2"}
    *
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    *

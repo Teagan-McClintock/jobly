@@ -45,8 +45,32 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
 }
 
 
-/**  */
-function sqlForFilter(){
+/** Takes two objects as input,
+ *  conditions: {key1: "condition_as_string", ...}
+ *  jsToSql: {key1: "column1_in_sql"}
+ *
+ * Returns a string representing the where clause
+ *
+ * example input: {"test": "ILIKE '%c%'", "test2": "<3"},
+ *  {"test": "test_col", "test2": "test2_col"}
+ * Should result in: "test_col ILIKE '%c%' AND test2 <3"
+ */
+
+function sqlForFilter(conditions){
+  if (conditions?.nameLike) {
+    conditions.nameLike = `name ILIKE '%${conditions.nameLike}%'`;
+  }
+
+  if(conditions?.minEmployees){
+    conditions.minEmployees = `num_employees >= ${conditions.minEmployees}`;
+  }
+
+  if (conditions?.maxEmployees){
+    conditions.maxEmployees = `num_employees <= ${conditions.maxEmployees}`;
+  }
+
+  const whereClause = Object.values(conditions).join(" AND ");
+  return whereClause;
 
 }
 
