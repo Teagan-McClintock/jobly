@@ -35,7 +35,7 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
 
   // {firstName: 'Aliya', age: 32} => ['"first_name"=$1', '"age"=$2']
   const cols = keys.map((colName, idx) =>
-      `"${jsToSql[colName] || colName}"=$${idx + 1}`,
+    `"${jsToSql[colName] || colName}"=$${idx + 1}`,
   );
 
   return {
@@ -45,27 +45,34 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
 }
 
 
-/** Takes two objects as input,
- *  conditions: {key1: "condition_as_string", ...}
- *  jsToSql: {key1: "column1_in_sql"}
+/** Takes object of query params,
+ * {
+ *  nameLike: "c",
+ *  minEmployees: 1,
+ *  maxEmployees: 2
+ * }
  *
- * Returns a string representing the where clause
+ * Returns a string representing the WHERE clause:
  *
- * example input: {"test": "ILIKE '%c%'", "test2": "<3"},
- *  {"test": "test_col", "test2": "test2_col"}
- * Should result in: "test_col ILIKE '%c%' AND test2 <3"
+ * "name ILIKE '%c%' AND num_employees >= 1 AND num_employees <= 2"
  */
 
-function sqlForFilter(conditions){
+function sqlForFilter(conditions) {
+
+  if (Object.keys(conditions).length === 0) throw new BadRequestError("No data");
+
   if (conditions?.nameLike) {
+    if (conditions.nameLike === ""){
+      throw new BadRequestError("Please provide a string")
+    }
     conditions.nameLike = `name ILIKE '%${conditions.nameLike}%'`;
   }
 
-  if(conditions?.minEmployees){
+  if (conditions?.minEmployees) {
     conditions.minEmployees = `num_employees >= ${conditions.minEmployees}`;
   }
 
-  if (conditions?.maxEmployees){
+  if (conditions?.maxEmployees) {
     conditions.maxEmployees = `num_employees <= ${conditions.maxEmployees}`;
   }
 
@@ -74,10 +81,6 @@ function sqlForFilter(conditions){
 
 }
 
-// {"column1" ILIKE $1 AND "column2" >= $2 AND "column2" <= $3}
 
-//{ nameLike: "name", minEmployees: "num_employees", maxEmployees: "num_employees"}
-
-
-module.exports = { sqlForPartialUpdate };
+module.exports = { sqlForPartialUpdate, sqlForFilter };
 
