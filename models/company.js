@@ -38,12 +38,12 @@ class Company {
                     description,
                     num_employees AS "numEmployees",
                     logo_url AS "logoUrl"`, [
-          handle,
-          name,
-          description,
-          numEmployees,
-          logoUrl,
-        ],
+      handle,
+      name,
+      description,
+      numEmployees,
+      logoUrl,
+    ],
     );
     const company = result.rows[0];
 
@@ -77,8 +77,23 @@ class Company {
    */
 
   static async findFiltered(conditions) {
-
+    const companiesRes = await db.query(`
+    SELECT handle,
+           name,
+           description,
+           num_employees AS "numEmployees",
+           logo_url      AS "logoUrl"
+    FROM companies
+    WHERE ${conditions}
+    ORDER BY name`);
+    return companiesRes.rows;
   }
+
+  // {name ilike '%c%' AND numEmployees > 1}
+
+
+
+
 
   /** Given a company handle, return data about company.
    *
@@ -119,11 +134,11 @@ class Company {
 
   static async update(handle, data) {
     const { setCols, values } = sqlForPartialUpdate(
-        data,
-        {
-          numEmployees: "num_employees",
-          logoUrl: "logo_url",
-        });
+      data,
+      {
+        numEmployees: "num_employees",
+        logoUrl: "logo_url",
+      });
     const handleVarIdx = "$" + (values.length + 1);
 
     const querySql = `
