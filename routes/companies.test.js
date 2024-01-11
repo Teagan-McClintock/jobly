@@ -161,7 +161,7 @@ describe("GET /companies", function () {
     const resp = await request(app)
       .get("/companies?minEmployees=5&maxEmployees=4");
     expect(resp.statusCode).toEqual(400);
-    expect(resp.error.message)
+    expect(resp.body.error.message)
       .toEqual("Min employees must be less than max employees");
   });
 
