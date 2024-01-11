@@ -98,5 +98,10 @@ describe("ensureAdmin", function () {
         .toThrow(UnauthorizedError);
   });
 
-  //TODO: test if unauth if isAdmin: "false" (the string)
+  test("unauth if isAdmin is a string", function () {
+    const req = {};
+    const res = { locals: { user: { username: "test", isAdmin: "true" } } };
+    expect(() => ensureAdmin(req, res, next))
+        .toThrow(UnauthorizedError);
+  });
 });
