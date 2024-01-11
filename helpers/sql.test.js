@@ -133,5 +133,7 @@ describe("sqlForFilter", function () {
     });
   });
 
+  //TODO: Write test for min > max
+
 });
 
