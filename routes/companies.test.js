@@ -113,7 +113,7 @@ describe("GET /companies", function () {
 
   // Test minEmployees - companies with no less than minEmployees
 
-  test("ok for minEmployees", async function() {
+  test("ok for minEmployees", async function () {
     const resp = await request(app).get("/companies?minEmployees=2");
     expect(resp.body).toEqual({
       companies: [{
@@ -135,7 +135,7 @@ describe("GET /companies", function () {
 
   // Test maxEmployees - companies with no more than maxEmployees
 
-  test("ok for maxEmployees", async function() {
+  test("ok for maxEmployees", async function () {
     const resp = await request(app).get("/companies?maxEmployees=2");
     expect(resp.body).toEqual({
       companies: [{
@@ -157,19 +157,20 @@ describe("GET /companies", function () {
 
   // Test minEmployees > maxEmployees - 400 error with appropriate message
 
-  test("does not work for minEmployees > maxEmployees", async function(){
+  test("does not work for minEmployees > maxEmployees", async function () {
     const resp = await request(app)
       .get("/companies?minEmployees=5&maxEmployees=4");
     expect(resp.statusCode).toEqual(400);
     expect(resp.error.message)
       .toEqual("Min employees must be less than max employees");
-  })
+  });
 
   // Test all three together work
 
-  test("ok for all 3 query params", async function() {
+  test("ok for all 3 query params", async function () {
     const resp = await request(app)
       .get("/companies?nameLike=C&minEmployees=1&maxEmployees=2");
+    expect(resp.statusCode).toEqual(200);
     expect(resp.body).toEqual({
       companies: [{
         handle: "c1",

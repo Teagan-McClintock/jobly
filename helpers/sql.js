@@ -61,6 +61,10 @@ function sqlForFilter(conditions) {
 
   if (Object.keys(conditions).length === 0) throw new BadRequestError("No data");
 
+  if (Number(conditions.minEmployees) > Number(conditions.maxEmployees)){
+    throw new BadRequestError("Min employees must be less than max employees")
+  }
+
   if (conditions?.nameLike) {
     if (conditions.nameLike === ""){
       throw new BadRequestError("Please provide a string")
