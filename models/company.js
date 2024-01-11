@@ -81,6 +81,11 @@ class Company {
 
   static async findFiltered(conditions) {
     const whereClause = sqlForFilter(conditions);
+
+    const { whereClause, values } = conditions
+
+
+
     const companiesRes = await db.query(`
     SELECT handle,
            name,
@@ -89,7 +94,7 @@ class Company {
            logo_url      AS "logoUrl"
     FROM companies
     WHERE ${whereClause}
-    ORDER BY name`);
+    ORDER BY name`, values);
     return companiesRes.rows;
   }
 
