@@ -66,9 +66,6 @@ function sqlForFilter(conditions) {
   }
 
   if (conditions?.nameLike) {
-    if (conditions.nameLike === ""){
-      throw new BadRequestError("Please provide a string")
-    }
     conditions.nameLike = `name ILIKE '%${conditions.nameLike}%'`;
   }
 

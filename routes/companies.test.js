@@ -165,6 +165,14 @@ describe("GET /companies", function () {
       .toEqual("Min employees must be less than max employees");
   });
 
+  // Test invalid query - 400 error
+
+  test("does not work for an invalid query param", async function() {
+    const resp = await request(app)
+      .get("/companies?bad=yes");
+    expect(resp.statusCode).toEqual(400);
+  })
+
   // Test all three together work
 
   test("ok for all 3 query params", async function () {
