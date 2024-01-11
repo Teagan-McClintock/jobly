@@ -65,28 +65,36 @@ function sqlForFilter(conditions) {
     throw new BadRequestError("Min employees must be less than max employees");
   }
 
-  if (conditions?.nameLike) {
-    conditions.nameLike = `name ILIKE '%${conditions.nameLike}%'`;
-  }
-  // FIXME: we are checking the truthyness of minEmployees. What about companies with 0?
-  // Instead check maxEmployees in conditions
-  if (conditions?.minEmployees) {
-    conditions.minEmployees = `num_employees >= ${conditions.minEmployees}`;
+  const subClauses = []
+  const values = [];
+
+  if ("nameLike" in conditions) {
+    values.push(`%${conditions.nameLike}%`);
+    subClauses.push(`name ILIKE $${values.length}`);
   }
 
-  if (conditions?.maxEmployees) {
-    conditions.maxEmployees = `num_employees <= ${conditions.maxEmployees}`;
+  if ("minEmployees" in conditions) {
+    if (isNaN(Number(conditions.minEmployees))) {
+      throw new BadRequestError("Not a number");
+    }
+
+    values.push(Number(conditions.minEmployees));
+    subClauses.push(`num_employees >= $${values.length}`);
   }
 
-  const whereClause = Object.values(conditions).join(" AND ");
-  return whereClause;
+  if ("maxEmployees" in conditions) {
+    if (isNaN(Number(conditions.maxEmployees))) {
+      throw new BadRequestError("Not a number");
+    }
+
+    values.push(Number(conditions.maxEmployees));
+    subClauses.push(`num_employees <= $${values.length}`);
+  }
+
+  const whereClause = subClauses.join(" AND ");
+  return { whereClause, values };
 
 }
 
 
 module.exports = { sqlForPartialUpdate, sqlForFilter };
-
-// TODO: We have a bug here that our test did not catch. Write a test to test for maxEmployees = 0, which will fail]
-
-// nameLike = joel';delete from users
-// WHERE num_employees >= $1    ... we want our strings to look like this. We need intelligent placeholders

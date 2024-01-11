@@ -80,11 +80,8 @@ class Company {
    */
 
   static async findFiltered(conditions) {
-    const whereClause = sqlForFilter(conditions);
 
-    const { whereClause, values } = conditions
-
-
+    const { whereClause, values } = sqlForFilter(conditions);
 
     const companiesRes = await db.query(`
     SELECT handle,
@@ -97,11 +94,6 @@ class Company {
     ORDER BY name`, values);
     return companiesRes.rows;
   }
-
-  // {name ilike '%c%' AND numEmployees > 1}
-
-
-
 
 
   /** Given a company handle, return data about company.

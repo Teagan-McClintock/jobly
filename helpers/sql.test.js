@@ -1,7 +1,7 @@
 "use strict";
 
 const { BadRequestError } = require("../expressError");
-const { sqlForPartialUpdate } = require("./sql");
+const { sqlForPartialUpdate, sqlForFilter } = require("./sql");
 
 describe("sqlForPartialUpdate", function () {
   test("Should work", function () {
@@ -113,6 +113,17 @@ describe("sqlForFilter", function () {
     }
   });
 
+  test("Should not work for nonnumber string for maxEmployees", function () {
+    const testData = { maxEmployees: "nonnumber string" };
+
+    try {
+      sqlForFilter(testData);
+      throw new Error("fail test, you shouldn't get here");
+    } catch (err) {
+      expect(err instanceof BadRequestError).toBeTruthy();
+    }
+  });
+
   test("Should work for maxEmployees === 0", function () {
     const testData = { maxEmployees: 0 };
     const sqlOutput = sqlForFilter(testData);
@@ -121,6 +132,6 @@ describe("sqlForFilter", function () {
       values: [0]
     });
   });
-  
+
 });
 
