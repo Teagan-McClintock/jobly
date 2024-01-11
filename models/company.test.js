@@ -146,16 +146,6 @@ describe("findFiltered", function () {
     ]);
   });
 
-  test("does not work: empty nameLike", async function () {
-    const condition = { nameLike: "" };
-    try {
-      let companies = await Company.findFiltered(condition);
-      throw new Error("fail test, you shouldn't get here");
-    } catch (err) {
-      expect(err instanceof BadRequestError).toBeTruthy();
-    }
-  });
-
   test("does not work: empty body", async function () {
     const condition = {};
     try {

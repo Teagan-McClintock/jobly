@@ -9,6 +9,7 @@ const { BadRequestError } = require("../expressError");
 const { ensureLoggedIn } = require("../middleware/auth");
 const Company = require("../models/company");
 
+const companyFilterSchema = require("../schemas/companyFilter.json");
 const companyNewSchema = require("../schemas/companyNew.json");
 const companyUpdateSchema = require("../schemas/companyUpdate.json");
 
@@ -51,8 +52,26 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
  */
 
 router.get("/", async function (req, res, next) {
-  const companies = await Company.findAll();
-  return res.json({ companies });
+  const queryKeys = Object.keys(req.query);
+  if (queryKeys.length >= 1){
+    const validator = jsonschema.validate(
+      req.query,
+      companyFilterSchema,
+      {required:true}
+    );
+
+    if (!validator.valid) {
+      const errs = validator.errors.map(e => e.stack);
+      throw new BadRequestError(errs);
+    }
+
+    const companies = await Company.findFiltered(req.query);
+    return res.json({ companies });
+  }
+  else {
+    const companies = await Company.findAll();
+    return res.json({ companies });
+  }
 });
 
 /** GET /[handle]  =>  { company }
