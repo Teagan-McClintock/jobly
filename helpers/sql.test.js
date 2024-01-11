@@ -133,7 +133,16 @@ describe("sqlForFilter", function () {
     });
   });
 
-  //TODO: Write test for min > max
+  test("Should not work for minEmployees > maxEmployees", function () {
+    const testData = { minEmployees: 2, maxEmployees: 1 };
+
+    try {
+      sqlForFilter(testData);
+      throw new Error("fail test, you shouldn't get here");
+    } catch (err) {
+      expect (err instanceof BadRequestError).toBeTruthy();
+    }
+  });
 
 });
 
