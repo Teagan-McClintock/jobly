@@ -96,8 +96,6 @@ describe("GET /companies", function () {
     });
   });
 
-  // Test nameLike - companies that contain nameLike
-
   test("ok for nameLike", async function () {
     const resp = await request(app).get("/companies?nameLike=3");
     expect(resp.body).toEqual({
@@ -110,8 +108,6 @@ describe("GET /companies", function () {
       }]
     });
   });
-
-  // Test minEmployees - companies with no less than minEmployees
 
   test("ok for minEmployees", async function () {
     const resp = await request(app).get("/companies?minEmployees=2");
@@ -133,8 +129,6 @@ describe("GET /companies", function () {
     });
   });
 
-  // Test maxEmployees - companies with no more than maxEmployees
-
   test("ok for maxEmployees", async function () {
     const resp = await request(app).get("/companies?maxEmployees=2");
     expect(resp.body).toEqual({
@@ -155,8 +149,6 @@ describe("GET /companies", function () {
     });
   });
 
-  // Test minEmployees > maxEmployees - 400 error with appropriate message
-
   test("does not work for minEmployees > maxEmployees", async function () {
     const resp = await request(app)
       .get("/companies?minEmployees=5&maxEmployees=4");
@@ -165,15 +157,11 @@ describe("GET /companies", function () {
       .toEqual("Min employees must be less than max employees");
   });
 
-  // Test invalid query - 400 error
-
-  test("does not work for an invalid query param", async function() {
+  test("does not work for an invalid query param", async function () {
     const resp = await request(app)
       .get("/companies?bad=yes");
     expect(resp.statusCode).toEqual(400);
-  })
-
-  // Test all three together work
+  });
 
   test("ok for all 3 query params", async function () {
     const resp = await request(app)

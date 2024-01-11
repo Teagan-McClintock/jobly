@@ -10,7 +10,7 @@ describe("sqlForPartialUpdate", function () {
     const sqlOutput = sqlForPartialUpdate(testData, testJsToSql);
 
     expect(sqlOutput).toEqual({
-      setCols: "\"test_column\"=$1, \"test2\"=$2",
+      setCols: '"test_column"=$1, "test2"=$2',
       values: [5, 6]
     });
   });
@@ -27,3 +27,5 @@ describe("sqlForPartialUpdate", function () {
     }
   });
 });
+
+// TODO: Write test for sqlForFilter()

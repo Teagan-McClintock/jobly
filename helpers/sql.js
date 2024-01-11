@@ -61,14 +61,15 @@ function sqlForFilter(conditions) {
 
   if (Object.keys(conditions).length === 0) throw new BadRequestError("No data");
 
-  if (Number(conditions.minEmployees) > Number(conditions.maxEmployees)){
-    throw new BadRequestError("Min employees must be less than max employees")
+  if (Number(conditions.minEmployees) > Number(conditions.maxEmployees)) {
+    throw new BadRequestError("Min employees must be less than max employees");
   }
 
   if (conditions?.nameLike) {
     conditions.nameLike = `name ILIKE '%${conditions.nameLike}%'`;
   }
-
+  // FIXME: we are checking the truthyness of minEmployees. What about companies with 0?
+  // Instead check maxEmployees in conditions
   if (conditions?.minEmployees) {
     conditions.minEmployees = `num_employees >= ${conditions.minEmployees}`;
   }
@@ -85,3 +86,7 @@ function sqlForFilter(conditions) {
 
 module.exports = { sqlForPartialUpdate, sqlForFilter };
 
+// TODO: We have a bug here that our test did not catch. Write a test to test for maxEmployees = 0, which will fail]
+
+// nameLike = joel';delete from users
+// WHERE num_employees >= $1    ... we want our strings to look like this. We need intelligent placeholders
