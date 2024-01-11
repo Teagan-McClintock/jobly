@@ -97,4 +97,6 @@ describe("ensureAdmin", function () {
     expect(() => ensureAdmin(req, res, next))
         .toThrow(UnauthorizedError);
   });
+
+  //TODO: test if unauth if isAdmin: "false" (the string)
 });

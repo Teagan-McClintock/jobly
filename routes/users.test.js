@@ -20,6 +20,8 @@ beforeEach(commonBeforeEach);
 afterEach(commonAfterEach);
 afterAll(commonAfterAll);
 
+//TODO: Check all the errors happen in the right order here too
+
 /************************************** POST /users */
 
 describe("POST /users", function () {
@@ -198,7 +200,7 @@ describe("GET /users/:username", function () {
     expect(resp.statusCode).toEqual(401);
   });
 
-  test("not found if user not found", async function () {
+  test("not found if user not found by admin", async function () {
     const resp = await request(app)
         .get(`/users/nope`)
         .set("authorization", `Bearer ${adminToken}`);
@@ -287,7 +289,7 @@ describe("PATCH /users/:username", () => {
     expect(resp.statusCode).toEqual(404);
   });
 
-  test("bad request if invalid data", async function () {
+  test("bad request if invalid data and admin", async function () {
     const resp = await request(app)
         .patch(`/users/u1`)
         .send({
@@ -295,7 +297,7 @@ describe("PATCH /users/:username", () => {
         })
         .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(400);
-  });
+  }); //TODO: Repeat this test for profile owner not admin
 
   test("works for profile owner not admin: set new password", async function () {
     const resp = await request(app)
@@ -337,8 +339,6 @@ describe("PATCH /users/:username", () => {
     expect(isSuccessful).toBeTruthy();
   });
 
-  // logged in and not profile owner and not admin
-
   test("unauth for not profile owner and not admin", async function () {
     const resp = await request(app)
         .patch(`/users/u2`)
@@ -348,6 +348,8 @@ describe("PATCH /users/:username", () => {
         .set("authorization", `Bearer ${u1Token}`);
     expect(resp.statusCode).toEqual(401);
   });
+
+  //TODO: Can a non-admin user set themselves as an admin?
 });
 
 /************************************** DELETE /users/:username */

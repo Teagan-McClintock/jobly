@@ -70,6 +70,8 @@ describe("POST /companies", function () {
       .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(400);
   });
+
+  //TODO: (In all the admin routes) Make sure middleware is applying first (we get 401 if not-admin bad data)
 });
 
 /************************************** GET /companies */
@@ -309,7 +311,7 @@ describe("DELETE /companies/:handle", function () {
       .delete(`/companies/c1`)
       .set("authorization", `Bearer ${adminToken}`);
     expect(resp.body).toEqual({ deleted: "c1" });
-  });
+  }); //TODO: Also make sure data was deleted
 
   test("unauth for anon", async function () {
     const resp = await request(app)
