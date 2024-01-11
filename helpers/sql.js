@@ -46,15 +46,23 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
 
 
 /** Takes object of query params,
+ *
+ *
+ * Returns an object with a string representing the WHERE clause, and values
+ * that will be substituted as params
+ *
+ * Sample input:
  * {
  *  nameLike: "c",
  *  minEmployees: 1,
  *  maxEmployees: 2
  * }
  *
- * Returns a string representing the WHERE clause:
- *
- * "name ILIKE '%c%' AND num_employees >= 1 AND num_employees <= 2"
+ * Sample output (produced from sample input):
+ * {
+ *  whereClause: "name ILIKE $1 AND num_employees >= $2 AND num_employees <= $3"
+ *  values: ["%c%", 1, 2]
+ * }
  */
 
 function sqlForFilter(conditions) {
