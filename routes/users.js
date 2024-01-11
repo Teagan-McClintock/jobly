@@ -69,6 +69,12 @@ router.get("/:username", ensureLoggedIn, async function (req, res, next) {
   return res.json({ user });
 });
 
+// Get, patch, delte
+
+// If res.locals.user.username !== req.params.username
+// Or if res.locals.user.isAdmin is falsey
+// If either of the two are not good, we throw an unauth err
+
 
 /** PATCH /[username] { user } => { user }
  *
@@ -79,6 +85,7 @@ router.get("/:username", ensureLoggedIn, async function (req, res, next) {
  *
  * Authorization required: login
  **/
+
 
 router.patch("/:username", ensureLoggedIn, async function (req, res, next) {
   const validator = jsonschema.validate(
