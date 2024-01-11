@@ -63,7 +63,7 @@ router.get("/", ensureAdmin, async function (req, res, next) {
  *
  * Authorization required: admin or profile owner
  **/
-
+//TODO: Make isAdmin check explicitly for !== true
 router.get("/:username", ensureLoggedIn, async function (req, res, next) {
   if (res.locals.user.username !== req.params.username
     && !res.locals.user.isAdmin) {
