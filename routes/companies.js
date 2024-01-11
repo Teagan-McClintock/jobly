@@ -52,7 +52,7 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
  */
 
 router.get("/", async function (req, res, next) {
-  const queryKeys = Object.keys(req.query);
+  const queryKeys = Object.keys(req.query); //could move validation to model (& adjust tests accordingly)
   if (queryKeys.length >= 1) {
     const validator = jsonschema.validate(
       req.query,

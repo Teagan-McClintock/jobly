@@ -45,8 +45,7 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
 }
 
 
-/** Takes object of query params,
- *
+/** Takes object of query params
  *
  * Returns an object with a string representing the WHERE clause, and values
  * that will be substituted as params
@@ -64,6 +63,7 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
  *  values: ["%c%", 1, 2]
  * }
  */
+//TODO: Clarify what valid params look like for input
 
 function sqlForFilter(conditions) {
 
@@ -83,7 +83,7 @@ function sqlForFilter(conditions) {
 
   if ("minEmployees" in conditions) {
     if (isNaN(Number(conditions.minEmployees))) {
-      throw new BadRequestError("Not a number");
+      throw new BadRequestError("Not a number"); //add field name
     }
 
     values.push(Number(conditions.minEmployees));
@@ -92,7 +92,7 @@ function sqlForFilter(conditions) {
 
   if ("maxEmployees" in conditions) {
     if (isNaN(Number(conditions.maxEmployees))) {
-      throw new BadRequestError("Not a number");
+      throw new BadRequestError("Not a number"); //add field name & desc of error
     }
 
     values.push(Number(conditions.maxEmployees));
