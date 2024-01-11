@@ -63,10 +63,10 @@ router.get("/", ensureAdmin, async function (req, res, next) {
  *
  * Authorization required: admin or profile owner
  **/
-//TODO: Make isAdmin check explicitly for !== true
+
 router.get("/:username", ensureLoggedIn, async function (req, res, next) {
   if (res.locals.user.username !== req.params.username
-    && !res.locals.user.isAdmin) {
+    && res.locals.user.isAdmin !== true) {
     throw new UnauthorizedError();
   }
   const user = await User.get(req.params.username);
@@ -87,7 +87,7 @@ router.get("/:username", ensureLoggedIn, async function (req, res, next) {
 
 router.patch("/:username", ensureLoggedIn, async function (req, res, next) {
   if (res.locals.user.username !== req.params.username
-    && !res.locals.user.isAdmin) {
+    && res.locals.user.isAdmin !== true) {
     throw new UnauthorizedError();
   }
 
@@ -113,7 +113,7 @@ router.patch("/:username", ensureLoggedIn, async function (req, res, next) {
 
 router.delete("/:username", ensureLoggedIn, async function (req, res, next) {
   if (res.locals.user.username !== req.params.username
-    && !res.locals.user.isAdmin) {
+    && res.locals.user.isAdmin !== true) {
     throw new UnauthorizedError();
   }
 

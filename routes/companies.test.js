@@ -4,6 +4,8 @@ const request = require("supertest");
 
 const db = require("../db");
 const app = require("../app");
+const { NotFoundError } = require("../expressError");
+const Company = require("../models/company")
 
 const {
   commonBeforeAll,
@@ -71,7 +73,17 @@ describe("POST /companies", function () {
     expect(resp.statusCode).toEqual(400);
   });
 
-  //TODO: (In all the admin routes) Make sure middleware is applying first (we get 401 if not-admin bad data)
+  test("unauthorized nonadmin with invalid data", async function () {
+    const resp = await request(app)
+      .post("/companies")
+      .send({
+        ...newCompany,
+        logoUrl: "not-a-url",
+      })
+      .set("authorization", `Bearer ${u1Token}`);
+    expect(resp.statusCode).toEqual(401);
+  });
+
 });
 
 /************************************** GET /companies */
@@ -301,6 +313,16 @@ describe("PATCH /companies/:handle", function () {
       .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(400);
   });
+
+  test("unauthorized nonadmin on invalid data", async function () {
+    const resp = await request(app)
+      .patch(`/companies/c1`)
+      .send({
+        logoUrl: "not-a-url",
+      })
+      .set("authorization", `Bearer ${u1Token}`);
+    expect(resp.statusCode).toEqual(401);
+  });
 });
 
 /************************************** DELETE /companies/:handle */
@@ -311,7 +333,14 @@ describe("DELETE /companies/:handle", function () {
       .delete(`/companies/c1`)
       .set("authorization", `Bearer ${adminToken}`);
     expect(resp.body).toEqual({ deleted: "c1" });
-  }); //TODO: Also make sure data was deleted
+
+    try {
+      await Company.get("c1");
+      throw new Error("fail test, you shouldn't get here");
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy()
+    }
+  });
 
   test("unauth for anon", async function () {
     const resp = await request(app)
@@ -331,5 +360,12 @@ describe("DELETE /companies/:handle", function () {
       .delete(`/companies/nope`)
       .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(404);
+  });
+
+  test("unauthorized nonadmin for no such company", async function () {
+    const resp = await request(app)
+      .delete(`/companies/nope`)
+      .set("authorization", `Bearer ${u1Token}`);
+    expect(resp.statusCode).toEqual(401);
   });
 });
