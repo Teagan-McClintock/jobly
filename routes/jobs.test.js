@@ -28,7 +28,7 @@ describe("POST /jobs", function () {
     title: "testNew",
     salary: 1000,
     equity: 0.5,
-    companyHandle: "test"
+    companyHandle: "c1"
   };
 
   test("ok for admins", async function () {
@@ -44,7 +44,7 @@ describe("POST /jobs", function () {
           title: "testNew",
           salary: 1000,
           equity: '0.5',
-          companyHandle: "test"
+          company_handle: "c1"
         }
       });
   });
