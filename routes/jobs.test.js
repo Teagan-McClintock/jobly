@@ -151,5 +151,89 @@ describe("GET /jobs/:id", function () {
   });
 });
 
+/************************************** PATCH /jobs/:id */
 
+describe("PATCH /jobs/:id", function () {
+  beforeEach(async function() {
+    const results = await Job.findAll()
+    j1Id = results[0].id;
+  });
+
+  test("works for admins", async function () {
+    const resp = await request(app)
+      .patch(`/jobs/${j1Id}`)
+      .send({
+        title: "j1-new",
+      })
+      .set("authorization", `Bearer ${adminToken}`);
+    expect(resp.body).toEqual({
+      job: {
+        id: j1Id,
+        title: "j1-new",
+        salary: 1,
+        equity: '0',
+        company_handle: "c1"
+      },
+    });
+  });
+
+  test("unauth for anon", async function () {
+    const resp = await request(app)
+      .patch(`/jobs/${j1Id}`)
+      .send({
+        title: "j1-new",
+      });
+    expect(resp.statusCode).toEqual(401);
+  });
+
+  test("unauth for non-admin users", async function () {
+    const resp = await request(app)
+      .patch(`/jobs/${j1Id}`)
+      .send({
+        name: "j1-new",
+      })
+      .set("authorization", `Bearer ${u1Token}`);
+    expect(resp.statusCode).toEqual(401);
+  });
+
+  test("not found on no such job", async function () {
+    const resp = await request(app)
+      .patch(`/jobs/0`)
+      .send({
+        title: "j0-bad",
+      })
+      .set("authorization", `Bearer ${adminToken}`);
+    expect(resp.statusCode).toEqual(404);
+  });
+
+  test("bad request on company change attempt - admin", async function () {
+    const resp = await request(app)
+      .patch(`/jobs/${j1Id}`)
+      .send({
+        company_handle: "c1-new",
+      })
+      .set("authorization", `Bearer ${adminToken}`);
+    expect(resp.statusCode).toEqual(400);
+  });
+
+  test("bad request on invalid data - admin", async function () {
+    const resp = await request(app)
+      .patch(`/jobs/${j1Id}`)
+      .send({
+        salary: "good",
+      })
+      .set("authorization", `Bearer ${adminToken}`);
+    expect(resp.statusCode).toEqual(400);
+  });
+
+  test("unauthorized nonadmin on invalid data", async function () {
+    const resp = await request(app)
+      .patch(`/jobs/${j1Id}`)
+      .send({
+        salary: "good",
+      })
+      .set("authorization", `Bearer ${u1Token}`);
+    expect(resp.statusCode).toEqual(401);
+  });
+});
 
