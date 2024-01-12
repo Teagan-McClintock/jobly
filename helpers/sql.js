@@ -64,6 +64,7 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
  * }
  */
 
+//TODO: combine bottom two functions
 
 function sqlForFilter(conditions) {
 
@@ -105,6 +106,8 @@ function sqlForFilter(conditions) {
   return { whereClause, values };
 
 }
+
+// function sqlForJobFilter(conditions) {}
 
 
 module.exports = { sqlForPartialUpdate, sqlForFilter };
