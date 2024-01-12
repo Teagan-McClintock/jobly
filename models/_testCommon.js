@@ -36,10 +36,11 @@ async function commonBeforeAll() {
                     salary,
                     equity,
                     company_handle)
-  VALUES ('j1', 70000, 0, 'c1'),
-        ('j2', 90000, 0.01, 'c2')`);
+  VALUES ('j1', 1, 0, 'c1'),
+        ('j2', 2, 0.01, 'c2')`);
 
 }
+
 
 async function commonBeforeEach() {
   await db.query("BEGIN");
