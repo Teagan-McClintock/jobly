@@ -93,3 +93,25 @@ describe("POST /jobs", function () {
   });
 
 });
+
+/************************************** GET /jobs */
+
+describe("GET /jobs", function () {
+
+  test("gets all jobs works", async function () {
+    const resp = await request(app)
+      .get("/jobs");
+
+    expect(resp.body).toEqual({
+      jobs: [
+
+      ]
+    });
+
+  })
+});
+
+
+
+
+

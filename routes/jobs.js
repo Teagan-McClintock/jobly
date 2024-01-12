@@ -36,4 +36,25 @@ router.post("/", ensureAdmin, async function (req, res, next) {
   return res.status(201).json({ job });
 });
 
+/** GET /  =>
+ *   { jobs: [ { id, title, salary, equity, company_handle }, ...] }
+ *
+ * Can filter in the future // TODO: add filtering
+ *
+ * Authorization required: none
+ */
+
+router.get("/", async function (req, res, next){
+  const jobs = await Job.findAll();
+  return res.json({ jobs });
+})
+
+
+
+
+
+
+
+
 module.exports = router;
+
