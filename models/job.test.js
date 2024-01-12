@@ -82,7 +82,132 @@ describe("findAll", function () {
 });
 
 /************************************** findFiltered */
-// TODO: not yet ....
+
+describe("find filtered", function () {
+  test("works", async function () {
+
+    const testConditions = {
+      title: "j",
+      minSalary: 1,
+      hasEquity: true
+    };
+
+    let jobs = await Job.findFiltered(testConditions);
+
+    expect(jobs).toEqual([{
+      id: expect.any(Number),
+      title: "j2",
+      salary: 2,
+      equity: "0.01",
+      company_handle: "c2"
+    }]);
+  });
+
+  test("works with one field", async function () {
+
+    const testConditions = {
+      title: "j",
+    };
+
+    let jobs = await Job.findFiltered(testConditions);
+
+    expect(jobs).toEqual([
+      {
+        id: expect.any(Number),
+        title: "j1",
+        salary: 1,
+        equity: "0",
+        company_handle: "c1"
+      },
+      {
+        id: expect.any(Number),
+        title: "j2",
+        salary: 2,
+        equity: "0.01",
+        company_handle: "c2"
+      }]);
+  });
+
+  test("works different combination", async function () {
+
+    const testConditions = {
+      title: "j",
+      minSalary: 1,
+    };
+
+    let jobs = await Job.findFiltered(testConditions);
+
+    expect(jobs).toEqual([
+      {
+        id: expect.any(Number),
+        title: "j1",
+        salary: 1,
+        equity: "0",
+        company_handle: "c1"
+      },
+      {
+        id: expect.any(Number),
+        title: "j2",
+        salary: 2,
+        equity: "0.01",
+        company_handle: "c2"
+      }]);
+  });
+
+  test("works hasEquity false", async function () {
+
+    const testConditions = {
+      title: "j",
+      minSalary: 1,
+      hasEquity: false,
+    };
+
+    let jobs = await Job.findFiltered(testConditions);
+
+    expect(jobs).toEqual([
+      {
+        id: expect.any(Number),
+        title: "j1",
+        salary: 1,
+        equity: "0",
+        company_handle: "c1"
+      },
+      {
+        id: expect.any(Number),
+        title: "j2",
+        salary: 2,
+        equity: "0.01",
+        company_handle: "c2"
+      }]);
+  });
+
+  test("does not work with bad data", async function () {
+    const testConditions = {
+      title: "j",
+      minSalary: "bad",
+      hasEquity: false,
+    };
+
+    try {
+      const jobs = await Job.findFiltered(testConditions);
+      throw new Error("fail test, you shouldn't get here");
+    } catch (err) {
+      expect(err instanceof BadRequestError).toBeTruthy();
+    }
+  });
+
+  test("does not work with empty body", async function () {
+    const testConditions = {};
+
+    try {
+      const jobs = await Job.findFiltered(testConditions);
+      throw new Error("fail test, you shouldn't get here");
+    } catch (err) {
+      expect(err instanceof BadRequestError).toBeTruthy();
+    }
+  });
+
+});
 
 
 /************************************** get */
