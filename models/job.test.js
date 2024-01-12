@@ -17,14 +17,6 @@ afterAll(commonAfterAll);
 
 let j1Id;
 
-// beforeEach function to ensure we have access to the Id of job with title "j1"
-beforeEach(async function() {
-  const results = await db.query(`SELECT id
-  FROM jobs
-  WHERE title = 'j1'`);
-  j1Id = results.rows[0].id;
-});
-
 /************************************** create */
 
 describe("create", function () {
@@ -96,6 +88,16 @@ describe("findAll", function () {
 /************************************** get */
 
 describe("get", function () {
+
+  // beforeEach function to ensure we have access to the Id of job with title "j1"
+  beforeEach(async function () {
+    const results = await db.query(`SELECT id
+  FROM jobs
+  WHERE title = 'j1'`);
+    j1Id = results.rows[0].id;
+  });
+
+
   test("works", async function () {
 
     let job = await Job.get(j1Id);
@@ -123,6 +125,16 @@ describe("get", function () {
 /************************************** update */
 
 describe("update", function () {
+
+  // beforeEach function to ensure we have access to the Id of job with title "j1"
+  beforeEach(async function () {
+    const results = await db.query(
+      `SELECT id
+        FROM jobs
+        WHERE title = 'j1'`);
+    j1Id = results.rows[0].id;
+  });
+
   const updateData = {
     title: "j3",
     salary: 3,
@@ -142,7 +154,7 @@ describe("update", function () {
     const result = await db.query(
       `SELECT id, title, salary, equity, company_handle
         FROM jobs
-        WHERE id = 1`
+        WHERE id = ${j1Id}`
     );
 
     expect(result.rows).toEqual([{
@@ -154,7 +166,7 @@ describe("update", function () {
     }]);
   });
 
-  test("works with nulls", async function() {
+  test("works with nulls", async function () {
     const updateDataSetNulls = {
       title: "j3",
       salary: null,
@@ -173,7 +185,7 @@ describe("update", function () {
     const result = await db.query(
       `SELECT id, title, salary, equity, company_handle
         FROM jobs
-        WHERE id = 1`
+        WHERE id = ${j1Id}`
     );
 
     expect(result.rows).toEqual([{
@@ -208,10 +220,19 @@ describe("update", function () {
 /************************************** remove */
 
 describe("remove", function () {
+
+  // beforeEach function to ensure we have access to the Id of job with title "j1"
+  beforeEach(async function () {
+    const results = await db.query(`SELECT id
+  FROM jobs
+  WHERE title = 'j1'`);
+    j1Id = results.rows[0].id;
+  });
+
   test("works", async function () {
     await Job.remove(j1Id);
     const res = await db.query(
-      `SELECT id FROM companies WHERE id=${j1Id}`);
+      `SELECT id FROM jobs WHERE id=${j1Id}`);
     expect(res.rows.length).toEqual(0);
   });
 
