@@ -20,8 +20,8 @@ const router = new express.Router();
  *
  * Authorization required: admin
  */
-router.post("/", ensureAdmin, async function() {
+// router.post("/", ensureAdmin, async function() {
 
-});
+// });
 
 module.exports = router;
