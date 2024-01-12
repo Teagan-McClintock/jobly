@@ -81,7 +81,7 @@ describe("findAll", function () {
   });
 });
 
-/************************************** findAll */
+/************************************** findFiltered */
 // TODO: not yet ....
 
 
