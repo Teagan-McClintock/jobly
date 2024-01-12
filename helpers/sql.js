@@ -107,7 +107,66 @@ function sqlForFilter(conditions) {
 
 }
 
-// function sqlForJobFilter(conditions) {}
+/**
+ * Takes an object of query params
+ *
+ * Returns an object with a string representing the WHERE clause, and values
+ * that will be substituted as params
+*
+* Sample input (contains all valid params):
+* {
+*  title: "c",
+*  minSalary: 1,
+*  hasEquity: true
+* }
+*
+* Sample output (produced from sample input):
+* {
+*  whereClause: "WHERE title ILIKE $1 AND salary >= $2 AND equity > $3"
+*  values: ["%c%", 1, 0]
+* }
+*/
+
+function sqlForJobFilter(conditions) {
+  if (Object.keys(conditions).length === 0) throw new BadRequestError("No data");
+
+  const subClauses = []
+  const values = [];
+
+  if ("title" in conditions) {
+    values.push(`%${conditions.title}%`);
+    subClauses.push(`title ILIKE $${values.length}`);
+  }
+
+  if ("minSalary" in conditions) {
+    if (isNaN(conditions.minSalary)) {
+      throw new BadRequestError(
+        `minSalary - ${conditions.minSalary} is not a number`);
+    }
+
+    values.push(Number(conditions.minSalary));
+    subClauses.push(`salary >= $${values.length}`);
+  }
+
+  if ("hasEquity" in conditions) {
+    if (conditions.hasEquity !== true && conditions.hasEquity !== false) {
+      throw new BadRequestError("hasEquity must be true or false");
+    }
+
+    if (conditions.hasEquity === true) {
+      values.push(0);
+      subClauses.push(`equity > $${values.length}`);
+    }
+  }
+
+  let whereClause = '';
+
+  if (subClauses.length >= 1){
+    const whereConditions = subClauses.join(" AND ");
+    whereClause = `WHERE ${whereConditions}`;
+  }
+  return { whereClause, values };
+}
 
 
-module.exports = { sqlForPartialUpdate, sqlForFilter };
+module.exports = { sqlForPartialUpdate, sqlForFilter, sqlForJobFilter };

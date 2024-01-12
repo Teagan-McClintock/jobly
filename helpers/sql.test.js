@@ -1,7 +1,7 @@
 "use strict";
 
 const { BadRequestError } = require("../expressError");
-const { sqlForPartialUpdate, sqlForFilter } = require("./sql");
+const { sqlForPartialUpdate, sqlForFilter, sqlForJobFilter } = require("./sql");
 
 describe("sqlForPartialUpdate", function () {
   test("Should work", function () {
@@ -149,7 +149,7 @@ describe("sqlForFilter", function () {
 describe("sqlForJobFilter", function () {
   test("Should work for title", function () {
     const testData = { title: "title" };
-    const sqlOutput = sqlForFilter(testData);
+    const sqlOutput = sqlForJobFilter(testData);
     expect(sqlOutput).toEqual({
       whereClause: `WHERE title ILIKE $1`,
       values: ["%title%"]
@@ -158,7 +158,7 @@ describe("sqlForJobFilter", function () {
 
   test("Should work for minSalary", function () {
     const testData = { minSalary: 1 };
-    const sqlOutput = sqlForFilter(testData);
+    const sqlOutput = sqlForJobFilter(testData);
     expect(sqlOutput).toEqual({
       whereClause: `WHERE salary >= $1`,
       values: [1]
@@ -167,7 +167,7 @@ describe("sqlForJobFilter", function () {
 
   test("Should work for hasEquity true", function () {
     const testData = { hasEquity: true };
-    const sqlOutput = sqlForFilter(testData);
+    const sqlOutput = sqlForJobFilter(testData);
     expect(sqlOutput).toEqual({
       whereClause: `WHERE equity > $1`,
       values: [0]
@@ -176,7 +176,7 @@ describe("sqlForJobFilter", function () {
 
   test("Should work for hasEquity false", function () {
     const testData = { hasEquity: false };
-    const sqlOutput = sqlForFilter(testData);
+    const sqlOutput = sqlForJobFilter(testData);
     expect(sqlOutput).toEqual({
       whereClause: ``,
       values: []
@@ -185,7 +185,7 @@ describe("sqlForJobFilter", function () {
 
   test("Should work for title, minSalary ", function () {
     const testData = { title: "title", minSalary: 1 };
-    const sqlOutput = sqlForFilter(testData);
+    const sqlOutput = sqlForJobFilter(testData);
     expect(sqlOutput).toEqual({
       whereClause: `WHERE title ILIKE $1 AND salary >= $2`,
       values: ['%title%', 1]
@@ -193,8 +193,8 @@ describe("sqlForJobFilter", function () {
   });
 
   test("Should work for title, hasEquity is true", function () {
-    const testData = { title: "c", hasEquity: true };
-    const sqlOutput = sqlForFilter(testData);
+    const testData = { title: "title", hasEquity: true };
+    const sqlOutput = sqlForJobFilter(testData);
     expect(sqlOutput).toEqual({
       whereClause: `WHERE title ILIKE $1 AND equity > $2`,
       values: ['%title%', 0]
@@ -203,7 +203,7 @@ describe("sqlForJobFilter", function () {
 
   test("Should work for title, hasEquity is false", function () {
     const testData = { title: "title", hasEquity: false };
-    const sqlOutput = sqlForFilter(testData);
+    const sqlOutput = sqlForJobFilter(testData);
     expect(sqlOutput).toEqual({
       whereClause: `WHERE title ILIKE $1`,
       values: [`%title%`]
@@ -212,7 +212,7 @@ describe("sqlForJobFilter", function () {
 
   test("Should work for title, minSalary, hasEquity is true", function () {
     const testData = { title: "title", minSalary: 1, hasEquity: true };
-    const sqlOutput = sqlForFilter(testData);
+    const sqlOutput = sqlForJobFilter(testData);
     expect(sqlOutput).toEqual({
       whereClause:
         `WHERE title ILIKE $1 AND salary >= $2 AND equity > $3`,
@@ -222,7 +222,7 @@ describe("sqlForJobFilter", function () {
 
   test("Should work for number as string for salary", function () {
     const testData = { minSalary: "1" };
-    const sqlOutput = sqlForFilter(testData);
+    const sqlOutput = sqlForJobFilter(testData);
     expect(sqlOutput).toEqual({
       whereClause: `WHERE salary >= $1`,
       values: [1]
@@ -233,7 +233,7 @@ describe("sqlForJobFilter", function () {
     const testData = { minSalary: "nonnumber string" };
 
     try {
-      sqlForFilter(testData);
+      sqlForJobFilter(testData);
       throw new Error("fail test, you shouldn't get here");
     } catch (err) {
       expect(err instanceof BadRequestError).toBeTruthy();
@@ -244,7 +244,7 @@ describe("sqlForJobFilter", function () {
     const testData = { hasEquity: "nonbool" };
 
     try {
-      sqlForFilter(testData);
+      sqlForJobFilter(testData);
       throw new Error("fail test, you shouldn't get here");
     } catch (err) {
       expect(err instanceof BadRequestError).toBeTruthy();
