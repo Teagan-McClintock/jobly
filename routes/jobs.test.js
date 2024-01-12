@@ -237,3 +237,56 @@ describe("PATCH /jobs/:id", function () {
   });
 });
 
+
+/************************************** DELETE /jobs/:id */
+
+describe("DELETE /jobs/:id", function () {
+
+  beforeEach(async function() {
+    const results = await Job.findAll()
+    j1Id = results[0].id;
+  });
+
+  test("works for admin users", async function () {
+    const resp = await request(app)
+      .delete(`/jobs/${j1Id}`)
+      .set("authorization", `Bearer ${adminToken}`);
+    expect(resp.body).toEqual({ deleted: `${j1Id}` });
+
+    try {
+      await Job.get(`${j1Id}`);
+      throw new Error("fail test, you shouldn't get here");
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy()
+    }
+  });
+
+  test("unauth for anon", async function () {
+    const resp = await request(app)
+      .delete(`/jobs/${j1Id}`);
+    expect(resp.statusCode).toEqual(401);
+  });
+
+  test("unauth for non-admin users", async function () {
+    const resp = await request(app)
+      .delete(`/jobs/${j1Id}`)
+      .set("authorization", `Bearer ${u1Token}`);
+    expect(resp.statusCode).toEqual(401);
+  });
+
+  test("not found for no such job", async function () {
+    const resp = await request(app)
+      .delete(`/jobs/0`)
+      .set("authorization", `Bearer ${adminToken}`);
+    expect(resp.statusCode).toEqual(404);
+  });
+
+  test("unauthorized nonadmin for no such job", async function () {
+    const resp = await request(app)
+      .delete(`/jobs/0`)
+      .set("authorization", `Bearer ${u1Token}`);
+    expect(resp.statusCode).toEqual(401);
+  });
+});
+
+

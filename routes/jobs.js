@@ -88,6 +88,16 @@ router.patch("/:id", ensureAdmin, async function (req, res, next) {
   return res.json({ job });
 });
 
+/** DELETE /[handle]  =>  { deleted: handle }
+ *
+ * Authorization: admin
+ */
+
+router.delete("/:id", ensureAdmin, async function (req, res, next) {
+  await Job.remove(req.params.id);
+  return res.json({ deleted: req.params.id });
+});
+
 
 
 
