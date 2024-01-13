@@ -3,7 +3,7 @@
 const { query } = require("express");
 const db = require("../db");
 const { BadRequestError, NotFoundError } = require("../expressError");
-const { sqlForPartialUpdate, sqlForFilter } = require("../helpers/sql");
+const { sqlForPartialUpdate, sqlForFilter, sqlForJobFilter } = require("../helpers/sql");
 
 class Job {
   /** Create a job (from data), update db, return new job data.
@@ -48,7 +48,18 @@ class Job {
    */
 
   static async findFiltered(conditions) {
+    const { whereClause, values } = sqlForJobFilter(conditions);
 
+    const jobsRes = await db.query(`
+    SELECT id,
+            title,
+            salary,
+            equity,
+            company_handle
+    FROM jobs
+    ${whereClause}
+    ORDER BY id`, values);
+    return jobsRes.rows;
   }
 
   /** Given a job Id, return data about the job
@@ -96,7 +107,7 @@ class Job {
     console.log("***** QUERYSQL: ", querySql);
     console.log("***** VALUES: ", values);
     console.log("***** ID: ", id);
-    
+
     const result = await db.query(querySql, [...values, id]);
     const job = result.rows[0];
 
@@ -122,7 +133,7 @@ class Job {
 
     if (!job) throw new NotFoundError(`No job: ${id}`);
 
-    return { deleted: id }
+    return { deleted: id };
 
   }
 }
