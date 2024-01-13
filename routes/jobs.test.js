@@ -120,14 +120,43 @@ describe("GET /jobs", function () {
         company_handle: "c2"
       }]
     });
+  });
 
+  test("gets filtered jobs works", async function () {
+    const resp = await request(app)
+      .get("/jobs")
+      .query({ title: "j", minSalary: "1", hasEquity: "true" });
+
+    expect(resp.body).toEqual([{
+      id: expect.any(Number),
+      title: "j2",
+      salary: 2,
+      equity: "0.01",
+      company_handle: "c2"
+    }]);
+  });
+
+  test("gets filtered jobs throws error with extra params", async function () {
+    const resp = await request(app)
+      .get("/jobs")
+      .query({ title: "j", minSalary: "1", hasEquity: "true", bad: "yes" });
+
+    expect(resp.statusCode).toEqual(400);
+  });
+
+  test("Filtering out all jobs does not throw error", async function () {
+    const resp = await request(app)
+      .get("/jobs")
+      .query({ title: "toolong", minSalary: "1", hasEquity: "true" });
+
+    expect(resp.body).toEqual([]);
   });
 });
 
-/************************************** GET /job/:id */
+/************************************** GET /jobs/:id */
 
-beforeEach(async function() {
-  const results = await Job.findAll()
+beforeEach(async function () {
+  const results = await Job.findAll();
   j1Id = results[0].id;
 });
 
@@ -154,8 +183,8 @@ describe("GET /jobs/:id", function () {
 /************************************** PATCH /jobs/:id */
 
 describe("PATCH /jobs/:id", function () {
-  beforeEach(async function() {
-    const results = await Job.findAll()
+  beforeEach(async function () {
+    const results = await Job.findAll();
     j1Id = results[0].id;
   });
 
@@ -242,8 +271,8 @@ describe("PATCH /jobs/:id", function () {
 
 describe("DELETE /jobs/:id", function () {
 
-  beforeEach(async function() {
-    const results = await Job.findAll()
+  beforeEach(async function () {
+    const results = await Job.findAll();
     j1Id = results[0].id;
   });
 
@@ -257,7 +286,7 @@ describe("DELETE /jobs/:id", function () {
       await Job.get(`${j1Id}`);
       throw new Error("fail test, you shouldn't get here");
     } catch (err) {
-      expect(err instanceof NotFoundError).toBeTruthy()
+      expect(err instanceof NotFoundError).toBeTruthy();
     }
   });
 
