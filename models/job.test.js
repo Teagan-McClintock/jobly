@@ -207,6 +207,27 @@ describe("find filtered", function () {
     }
   });
 
+  test("works for string false hasEquity", async function(){
+    const testConditions = { hasEquity: "false" };
+
+    const jobs = await Job.findFiltered(testConditions);
+    expect(jobs).toEqual([
+      {
+        id: expect.any(Number),
+        title: "j1",
+        salary: 1,
+        equity: "0",
+        company_handle: "c1"
+      },
+      {
+        id: expect.any(Number),
+        title: "j2",
+        salary: 2,
+        equity: "0.01",
+        company_handle: "c2"
+      }]);
+  })
+
 });
 
 

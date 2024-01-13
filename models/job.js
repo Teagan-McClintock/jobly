@@ -40,7 +40,10 @@ class Job {
   }
 
   /**
-   * TODO: Detail on findFiltered
+   * Takes an input object of conditions and queries database based on those
+   * conditions, using a helper function to construct the query.
+   *
+   * Input can contain { title, minSalary, hasEquity }
    *
    * Returns [{ id, title, salary, equity, company_handle }, ...]
    *
