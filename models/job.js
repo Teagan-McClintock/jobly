@@ -48,6 +48,10 @@ class Job {
    */
 
   static async findFiltered(conditions) {
+    if ("hasEquity" in conditions) {
+      if (conditions.hasEquity === "true") conditions.hasEquity = true;
+      if (conditions.hasEquity === "false") conditions.hasEquity = false;
+    }
     const { whereClause, values } = sqlForJobFilter(conditions);
 
     const jobsRes = await db.query(`

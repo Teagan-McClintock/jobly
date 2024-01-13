@@ -127,13 +127,13 @@ describe("GET /jobs", function () {
       .get("/jobs")
       .query({ title: "j", minSalary: "1", hasEquity: "true" });
 
-    expect(resp.body).toEqual([{
+    expect(resp.body).toEqual({jobs: [{
       id: expect.any(Number),
       title: "j2",
       salary: 2,
       equity: "0.01",
       company_handle: "c2"
-    }]);
+    }]});
   });
 
   test("gets filtered jobs throws error with extra params", async function () {
@@ -149,7 +149,7 @@ describe("GET /jobs", function () {
       .get("/jobs")
       .query({ title: "toolong", minSalary: "1", hasEquity: "true" });
 
-    expect(resp.body).toEqual([]);
+    expect(resp.body).toEqual({jobs: []});
   });
 });
 

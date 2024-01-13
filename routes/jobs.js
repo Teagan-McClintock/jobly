@@ -10,6 +10,7 @@ const { ensureLoggedIn, ensureAdmin } = require("../middleware/auth");
 const Job = require("../models/job");
 const jobNewSchema = require("../schemas/jobNew.json");
 const jobUpdateSchema = require("../schemas/jobUpdate.json");
+const jobFilterSchema = require("../schemas/jobFilter.json");
 
 const router = new express.Router();
 
@@ -46,8 +47,26 @@ router.post("/", ensureAdmin, async function (req, res, next) {
  */
 
 router.get("/", async function (req, res, next){
-  const jobs = await Job.findAll();
-  return res.json({ jobs });
+  const queryKeys = Object.keys(req.query);
+  if (queryKeys.length >= 1){
+    const validator = jsonschema.validate(
+      req.query,
+      jobFilterSchema,
+      { required: true }
+    );
+
+    if (!validator.valid) {
+      const errs = validator.errors.map(e => e.stack);
+      throw new BadRequestError(errs);
+    };
+
+    const jobs = await Job.findFiltered(req.query);
+    return res.json({ jobs });
+  }
+  else {
+    const jobs = await Job.findAll();
+    return res.json({ jobs });
+  }
 })
 
 /** GET /[id]  =>  { job }
