@@ -205,6 +205,14 @@ class User {
 
     if (!user) throw new NotFoundError(`No user: ${username}`);
   }
+
+  // takes job id and inserts into the table applications, if successful, returns what it says
+  // in the instructions
+
+  // test for job theyu havent applied for
+  // test for dupe jobs
+
+  
 }
 
 
